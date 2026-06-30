@@ -17,19 +17,19 @@ return new class extends Migration
             $table->string('nome', 150);
             $table->string('telefone', 20);
             $table->string('cpf', 14)->unique();
-            $table->string('qualificacao', 150);
             $table->decimal('avaliacao_media', 3, 2)
                 ->default(0);
-            $table->string('rua', 200);
-            $table->string('numero', 20);
-            $table->string('complemento', 100)
-                ->nullable();
-            $table->string('bairro', 100);
-            $table->string('cidade', 100);
-            $table->string('estado', 50);
-            $table->string('cep', 10);
+            $table->string('qualificacao', 150)->nullable();
+            $table->string('rua', 200)->nullable();
+            $table->string('numero', 20)->nullable();
+            $table->string('bairro', 100)->nullable();
+            $table->string('cidade', 100)->nullable();
+            $table->string('estado', 50)->nullable();
+            $table->string('cep', 10)->nullable();
             $table->string('email', 70)
                 ->unique();
+            $table->string('password');
+            $table->string('complemento', 50)->nullable();
 
             $table->timestamps();
         });
