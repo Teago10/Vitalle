@@ -1,87 +1,106 @@
 import './bootstrap';
-
 import Alpine from 'alpinejs';
 
 window.Alpine = Alpine;
-
 Alpine.start();
 
-const avisoCuidador = document.getElementById("avisoCuidador");
-btnCuidador.onclick = function () {
+document.addEventListener("DOMContentLoaded", () => {
 
-    form.action = "{{ route('cuidador.store') }}";
+    // ===== Cadastro =====
 
-    avisoCuidador.classList.remove("hidden");
+    const form = document.getElementById("formCadastro");
 
-    setAtivo(btnCuidador, btnResponsavel);
+    if (form) {
 
-};
+        const btnCuidador = document.getElementById("btnCuidador");
+        const btnResponsavel = document.getElementById("btnResponsavel");
+        const avisoCuidador = document.getElementById("avisoCuidador");
 
-btnResponsavel.onclick = function () {
+        const rotaCuidador = form.dataset.cuidador;
+        const rotaResponsavel = form.dataset.responsavel;
 
-    form.action = "{{ route('responsavel.store') }}";
+        function setAtivo(ativo, inativo) {
+            ativo.classList.add("border-emerald-500", "bg-emerald-50", "text-emerald-700");
+            ativo.classList.remove("border-gray-200", "bg-white", "text-gray-500");
 
-    avisoCuidador.classList.add("hidden");
+            inativo.classList.add("border-gray-200", "bg-white", "text-gray-500");
+            inativo.classList.remove("border-emerald-500", "bg-emerald-50", "text-emerald-700");
+        }
 
-    setAtivo(btnResponsavel, btnCuidador);
+        btnCuidador.addEventListener("click", () => {
+            form.action = rotaCuidador;
+            avisoCuidador.classList.remove("hidden");
+            setAtivo(btnCuidador, btnResponsavel);
+        });
 
-};
-    // --cpf--
-const cpf = document.getElementById("cpf");
+        btnResponsavel.addEventListener("click", () => {
+            form.action = rotaResponsavel;
+            avisoCuidador.classList.add("hidden");
+            setAtivo(btnResponsavel, btnCuidador);
+        });
+    }
 
-cpf.addEventListener("input", function () {
+    // ===== CPF =====
 
-    let valor = cpf.value.replace(/\D/g, "");
+    const cpf = document.getElementById("cpf");
 
-    valor = valor.replace(/(\d{3})(\d)/, "$1.$2");
+    if (cpf) {
+        cpf.addEventListener("input", () => {
 
-    valor = valor.replace(/(\d{3})(\d)/, "$1.$2");
+            let valor = cpf.value.replace(/\D/g, "");
 
-    valor = valor.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+            valor = valor.replace(/(\d{3})(\d)/, "$1.$2");
+            valor = valor.replace(/(\d{3})(\d)/, "$1.$2");
+            valor = valor.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
 
-    cpf.value = valor;
+            cpf.value = valor;
+        });
+    }
 
-});
-    // --telefone--
-const telefone = document.getElementById("telefone");
+    // ===== Telefone =====
 
-telefone.addEventListener("input", function () {
+    const telefone = document.getElementById("telefone");
 
-    let valor = telefone.value.replace(/\D/g, "");
+    if (telefone) {
 
-    valor = valor.replace(/^(\d{2})(\d)/g, "($1) $2");
-    valor = valor.replace(/(\d)(\d{4})$/, "$1-$2");
+        telefone.addEventListener("input", () => {
 
-    telefone.value = valor;
+            let valor = telefone.value.replace(/\D/g, "");
 
-});
+            valor = valor.replace(/^(\d{2})(\d)/, "($1) $2");
+            valor = valor.replace(/(\d)(\d{4})$/, "$1-$2");
 
-    // --password--
-const senha = document.getElementById("password");
+            telefone.value = valor;
+        });
+    }
 
-const togglePassword = document.getElementById("togglePassword");
+    // ===== Mostrar senha =====
 
-const eyeOpen = document.getElementById("eyeOpen");
+    const senha = document.getElementById("password");
+    const togglePassword = document.getElementById("togglePassword");
+    const eyeOpen = document.getElementById("eyeOpen");
+    const eyeClosed = document.getElementById("eyeClosed");
 
-const eyeClosed = document.getElementById("eyeClosed");
+    if (senha && togglePassword) {
 
-togglePassword.addEventListener("click", function () {
+        togglePassword.addEventListener("click", () => {
 
-    if (senha.type === "password") {
+            if (senha.type === "password") {
 
-        senha.type = "text";
+                senha.type = "text";
 
-        eyeOpen.classList.add("hidden");
+                eyeOpen.classList.add("hidden");
+                eyeClosed.classList.remove("hidden");
 
-        eyeClosed.classList.remove("hidden");
+            } else {
 
-    } else {
+                senha.type = "password";
 
-        senha.type = "password";
+                eyeClosed.classList.add("hidden");
+                eyeOpen.classList.remove("hidden");
+            }
 
-        eyeClosed.classList.add("hidden");
-
-        eyeOpen.classList.remove("hidden");
+        });
 
     }
 

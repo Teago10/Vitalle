@@ -6,7 +6,7 @@ use App\Http\Controllers\CuidadorController;
 use App\Http\Controllers\ResponsavelController;
 
 Route::get('/', function () {
-    return view('cadastro');
+    return view('welcome');
 });
 
 Route::get('/dashboard', function () {

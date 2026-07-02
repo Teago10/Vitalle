@@ -1,6 +1,4 @@
-@extends('layouts.guest')
-
-@section('content')
+<x-guest-layout>
     <div class="min-h-screen flex items-center justify-center py-10 p-10 rounded-2xl" style="background-color: #f0ede8;">
 
         <div class="w-full max-w-sm bg-white rounded-2xl shadow-md px-8 py-8">
@@ -54,7 +52,10 @@
             </div>
 
             {{-- Formulário --}}
-            <form id="formCadastro" action="{{ route('cuidador.store') }}" method="POST" class="mt-6 space-y-4">
+            <form id="formCadastro" action="{{ route('cuidador.store') }}" method="POST" class="mt-6 space-y-4"
+            data-cuidador="{{ route('cuidador.store') }}"
+            data-responsavel="{{ route('responsavel.store') }}">
+
                 @csrf
 
                 {{-- Nome --}}
@@ -96,13 +97,14 @@
 
                         <div class="relative">
                             <span class="absolute inset-y-0 left-3 flex items-center text-gray-400">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor" stroke-width="1.8">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                                     <rect x="5" y="3" width="14" height="18" rx="2" />
                                     <path stroke-linecap="round" d="M9 8h6M9 12h6M9 16h4" />
                                 </svg>
                             </span>
-                            <input id="cpf" name="cpf" type="text" maxlength="14" placeholder="000.000.000-00"
+                            <input id="cpf" name="cpf" type="text" maxlength="14"
+                                placeholder="000.000.000-00"
                                 class="w-full pl-9 pr-2 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent placeholder-gray-300">
                         </div>
                         <x-input-error :messages="$errors->get('cpf')" class="mt-1" />
@@ -130,8 +132,8 @@
                     <label class="block text-xs font-semibold text-gray-600 mb-1.5">Senha</label>
                     <div class="relative">
                         <span class="absolute inset-y-0 left-3 flex items-center text-gray-400">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor" stroke-width="1.8">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                                 <rect x="5" y="11" width="14" height="10" rx="2" />
                                 <path stroke-linecap="round" d="M8 11V7a4 4 0 0 1 8 0v4" />
                             </svg>
@@ -158,17 +160,17 @@
 
                                 </svg>
                             </span>
-                                <span id="eyeClosed" class="hidden">
+                            <span id="eyeClosed" class="hidden">
 
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
 
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 3l18 18" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 3l18 18" />
 
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M10.477 10.489A3 3 0 0013.5 13.5" />
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M10.477 10.489A3 3 0 0013.5 13.5" />
 
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.88 5.09A9.953 9.953 0 0112 4.5
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.88 5.09A9.953 9.953 0 0112 4.5
 
     c4.638 0 8.573 3.007 9.963 7.178
 
@@ -176,15 +178,15 @@
 
     a10.017 10.017 0 01-4.132 5.411" />
 
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.228 6.228A9.956 9.956 0 002.036 11.68
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6.228 6.228A9.956 9.956 0 002.036 11.68
 
     c1.39 4.171 5.326 7.178 9.964 7.178
 
     a9.953 9.953 0 005.772-1.772" />
 
-                                    </svg>
+                                </svg>
 
-                                </span>
+                            </span>
 
                         </button>
                     </div>
@@ -220,26 +222,4 @@
         </div>
     </div>
 
-    <script>
-        const btnCuidador = document.getElementById("btnCuidador");
-        const btnResponsavel = document.getElementById("btnResponsavel");
-        const form = document.getElementById("formCadastro");
-
-        function setAtivo(ativo, inativo) {
-            ativo.classList.add("border-emerald-500", "bg-emerald-50", "text-emerald-700");
-            ativo.classList.remove("border-gray-200", "bg-white", "text-gray-500");
-            inativo.classList.add("border-gray-200", "bg-white", "text-gray-500");
-            inativo.classList.remove("border-emerald-500", "bg-emerald-50", "text-emerald-700");
-        }
-
-        btnCuidador.onclick = function() {
-            form.action = "{{ route('cuidador.store') }}";
-            setAtivo(btnCuidador, btnResponsavel);
-        };
-
-        btnResponsavel.onclick = function() {
-            form.action = "{{ route('responsavel.store') }}";
-            setAtivo(btnResponsavel, btnCuidador);
-        };
-    </script>
-@endsection
+</x-guest-layout>
