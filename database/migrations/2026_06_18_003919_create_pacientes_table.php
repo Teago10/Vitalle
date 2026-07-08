@@ -31,7 +31,7 @@ return new class extends Migration
             $table->string('cidade', 100);
             $table->string('estado', 50);
             $table->string('cep', 10);
-            $table->string('email', 70)->nullable();
+            $table->string('email', 70)->unique();
 
             $table->timestamps();
         });
