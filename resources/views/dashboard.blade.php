@@ -19,7 +19,7 @@
     {{-- Navegação --}}
     <nav class="flex-1 px-3 py-2 flex flex-col gap-1 overflow-y-auto">
 
-        <a 
+        <a href="{{route('admin.paciente.index')}}"
             class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm transition-colors
                     {{ $active === 'cadastros'
                         ? 'bg-[#5FA83D] text-white'

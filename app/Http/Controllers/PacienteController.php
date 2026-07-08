@@ -29,7 +29,23 @@ class PacienteController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nome' => 'required',
+            'data_nascimento' => 'required',
+            'comorbidade' => 'required',
+            'medicacao' => 'required',
+        ]);
+
+        $paciente = new Paciente();
+
+        $paciente->nome = $request->nome;
+        $paciente->data_nascimento = $request->data_nascimento;
+        $paciente->comorbidade = $request->comorbidade;
+        $paciente->medicacao = $request->medicacao;
+
+        $paciente->save();
+
+        return redirect()->route('admin.paciente.index');
     }
 
     /**
