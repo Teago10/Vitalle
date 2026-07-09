@@ -24,8 +24,8 @@
                 <thead class="bg-gray-100">
                     <tr>
                         <th class="p-4 text-left">Nome</th>
-                        <th class="p-4 text-left">CPF</th>
-                        <th class="p-4 text-left">Telefone</th>
+                        <th class="p-4 text-left">Data Nascimento</th>
+                        <th class="p-4 text-left">Email</th>
                         <th class="p-4 text-left">Responsável</th>
                         <th class="p-4 text-center">Ações</th>
                     </tr>
