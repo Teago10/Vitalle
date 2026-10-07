@@ -52,13 +52,23 @@
 
                             <td class="p-4 text-center">
 
+                                <a href="{{ route('profile.paciente.editar', $p->id) }}">
                                 <button class="text-blue-700 hover:text-blue-800">
                                     <i class="ti ti-edit"></i> Editar
                                 </button>
+                            </a>
 
-                                <button class="text-red-700 hover:text-red-800 ml-4">
-                                    <i class="ti ti-trash"></i> Excluir
-                                </button>
+
+                                <form action="{{ route('profile.paciente.excluir', $p->id) }}" method="POST">
+
+                                        @method('delete')
+                                        @csrf
+
+                                        <button type="submit" class="text-red-700 hover:text-red-800" 
+                                        onclick="return confirm('Deseja realmente excluir o registro?')">
+                                            Excluir
+                                    </button>
+                                </form>
 
                             </td>
 
