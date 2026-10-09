@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('avaliacoes', function (Blueprint $table) {
@@ -17,24 +14,14 @@ return new class extends Migration
 
             $table->foreignId('id_cuidador')
                 ->constrained('cuidadores')
-                ->cascadeOnDelete();
+                ->onDelete('cascade');
 
-            $table->foreignId('id_responsavel')
-                ->constrained('responsaveis')
-                ->cascadeOnDelete();
-
-            $table->tinyInteger('nota');
-
-            $table->string('comentario', 500)
-                ->nullable();
+            $table->decimal('nota', 2, 1);
 
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('avaliacoes');

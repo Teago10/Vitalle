@@ -431,23 +431,6 @@
         }
 
 
-        function mostrarMaisPaciente(id, botao) {
-            const informacoes =
-                document.getElementById('maisPaciente-' + id);
-
-            if (informacoes.classList.contains('hidden')) {
-                informacoes.classList.remove('hidden');
-
-                botao.innerHTML = 'Ver menos';
-            } else {
-                informacoes.classList.add('hidden');
-
-                botao.innerHTML = 'Ver mais';
-            }
-        }
-
-
-
         function atualizarValor() {
             const jornada =
                 document.getElementById('tipo_jornada').value;

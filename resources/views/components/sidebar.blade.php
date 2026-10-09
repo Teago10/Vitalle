@@ -27,7 +27,8 @@
                     Atendimentos
                 </a>
 
-                <a class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm transition-colors
+                <a href="{{route('avaliacao.index')}}"
+                 class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm transition-colors
                     {{ $active === 'avaliacoes' ? 'bg-[#5FA83D] text-white' : 'text-white/75 hover:bg-white/10 hover:text-white' }}">
                     <i class="ti ti-star text-lg"></i>
                     Avaliações
@@ -38,11 +39,6 @@
                 <a class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm text-white/75 hover:bg-white/10 hover:text-white">
                     <i class="ti ti-headset text-lg"></i>
                     Suporte
-                </a>
-
-                <a class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm text-white/75 hover:bg-white/10 hover:text-white">
-                    <i class="ti ti-chart-bar text-lg"></i>
-                    Relatórios
                 </a>
 
             </nav>

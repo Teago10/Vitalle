@@ -1,5 +1,5 @@
 <?php
-
+use App\Http\Controllers\AvaliacaoController;
 use App\Http\Controllers\AtendimentoController;
 use App\Http\Controllers\PacienteController;
 use App\Http\Controllers\ProfileController;
@@ -24,6 +24,13 @@ Route::post('/dashboard/cadastro', [PacienteController::class, 'store'])->name('
 
 Route::get('/dashboard/atendimento/cadastro', [AtendimentoController::class, 'create'])
     ->name('atendimento.cadastro');
+
+    Route::get('/dashboard/avaliacao', [AvaliacaoController::class, 'index'])
+    ->name('avaliacao.index');
+
+Route::post('/dashboard/avaliacao/salvar', [AvaliacaoController::class, 'salvar'])
+    ->name('avaliacao.salvar');
+
 
     Route::get('/dashboard/atendimento', [AtendimentoController::class, 'index'])
     ->name('atendimento.index');
