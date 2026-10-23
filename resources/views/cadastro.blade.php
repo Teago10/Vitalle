@@ -1,322 +1,565 @@
+
 <x-sistema>
 
-    <div class="max-w-6xl mx-auto">
+    @php
+        $campo = 'w-full rounded-xl border border-[#D9E2DA] bg-[#F8F2EE] px-4 py-3 text-sm text-[#07311C] focus:border-[#52745C] focus:ring-[#52745C]';
+        $rotulo = 'mb-2 block text-sm font-semibold text-[#07311C]';
+    @endphp
 
-        <x-page-header title="Cadastrar Paciente" subtitle="Preencha os dados para cadastrar um novo paciente.">
+    <div class="mx-auto max-w-6xl">
+
+        <x-page-header
+            title="Cadastrar Paciente"
+            subtitle="Preencha as informações para cadastrar um novo paciente.">
 
             <a href="{{ route('admin.paciente.index') }}"
-                class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-5 py-3 rounded-lg flex items-center gap-2">
-                <i class="ti ti-arrow-left"></i>
+               class="inline-flex items-center gap-2 rounded-xl
+                      border border-[#D9E2DA] bg-white px-5 py-3
+                      text-sm font-semibold text-[#07311C]
+                      transition-colors hover:bg-[#F0EEE7]">
+
+                <i class="ti ti-arrow-left text-lg"></i>
                 Voltar
+
             </a>
 
         </x-page-header>
 
-        <div class="bg-white rounded-3xl shadow-lg p-8">
+        {{-- Mensagens de erro --}}
+        @if ($errors->any())
 
-            <form action="{{route('profile.paciente.armazenar')}}" method="POST">
+            <div class="mb-6 rounded-xl border border-red-200
+                        bg-red-50 p-5 text-red-700">
 
-                @csrf
+                <p class="mb-2 font-semibold">
+                    Verifique os erros abaixo:
+                </p>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <ul class="list-inside list-disc text-sm">
+                    @foreach ($errors->all() as $erro)
+                        <li>{{ $erro }}</li>
+                    @endforeach
+                </ul>
+
+            </div>
+
+        @endif
+
+        <form
+            action="{{ route('profile.paciente.armazenar') }}"
+            method="POST"
+            class="space-y-6">
+
+            @csrf
+
+            {{-- INFORMAÇÕES PESSOAIS --}}
+            <section class="rounded-2xl border border-[#52745C]/10
+                            bg-white p-6 shadow-sm sm:p-8">
+
+                <div class="mb-6 flex items-center gap-3
+                            border-b border-gray-100 pb-5">
+
+                    <div class="flex h-11 w-11 items-center justify-center
+                                rounded-xl bg-[#F0EEE7]">
+
+                        <i class="ti ti-user-plus text-2xl text-[#52745C]"></i>
+
+                    </div>
+
+                    <div>
+                        <h2 class="text-lg font-semibold text-[#07311C]">
+                            Informações pessoais
+                        </h2>
+
+                        <p class="text-sm text-gray-500">
+                            Dados de identificação do paciente.
+                        </p>
+                    </div>
+
+                </div>
+
+                <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
 
                     {{-- Nome --}}
                     <div>
-
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
-                            Nome
+                        <label for="nome" class="{{ $rotulo }}">
+                            Nome completo
                         </label>
 
-                        <input type="text" name="nome" value="{{ old('nome') }}"
-                            class="w-full rounded-lg border-gray-300 focus:border-[#5FA83D] focus:ring-[#5FA83D]"
-                            required>
+                        <input
+                            id="nome"
+                            type="text"
+                            name="nome"
+                            value="{{ old('nome') }}"
+                            class="{{ $campo }}"
+                            placeholder="Digite o nome completo"
+                            required
+                        >
 
                         @error('nome')
-                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            <p class="mt-1 text-sm text-red-600">
+                                {{ $message }}
+                            </p>
                         @enderror
-
                     </div>
 
                     {{-- Responsável --}}
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <label for="id_responsavel" class="{{ $rotulo }}">
                             Responsável
                         </label>
 
-                        <select name="id_responsavel"
-                            class="w-full rounded-lg border-gray-300 focus:border-[#5FA83D] focus:ring-[#5FA83D]"
+                        <select
+                            id="id_responsavel"
+                            name="id_responsavel"
+                            class="{{ $campo }}"
                             required>
 
-                            <option value="">Selecione um responsável</option>
-
-                            
+                            <option value="">
+                                Selecione um responsável
+                            </option>
 
                             @foreach ($responsaveis as $id => $nome)
-                                <option value="{{ $id }}" {{old('id_responsavel', $paciente->id_responsavel) == $id ? 'selected' : ''}}>
+
+                                <option
+                                    value="{{ $id }}"
+                                    @selected(old('id_responsavel') == $id)>
 
                                     {{ $nome }}
 
                                 </option>
+
                             @endforeach
-
-
 
                         </select>
 
                         @error('id_responsavel')
-                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            <p class="mt-1 text-sm text-red-600">
+                                {{ $message }}
+                            </p>
                         @enderror
                     </div>
 
                     {{-- Data de nascimento --}}
                     <div>
-
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <label for="data_nascimento" class="{{ $rotulo }}">
                             Data de nascimento
                         </label>
 
-                        <input type="date" name="data_nascimento" value="{{ old('data_nascimento') }}"
-                            class="w-full rounded-lg border-gray-300 focus:border-[#5FA83D] focus:ring-[#5FA83D]"
-                            required>
+                        <input
+                            id="data_nascimento"
+                            type="date"
+                            name="data_nascimento"
+                            value="{{ old('data_nascimento') }}"
+                            class="{{ $campo }}"
+                            required
+                        >
 
                         @error('data_nascimento')
-                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            <p class="mt-1 text-sm text-red-600">
+                                {{ $message }}
+                            </p>
                         @enderror
-
                     </div>
 
-                    {{-- Email --}}
+                    {{-- E-mail --}}
                     <div>
-
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <label for="email" class="{{ $rotulo }}">
                             E-mail
                         </label>
 
-                        <input type="email" name="email" value="{{ old('email') }}"
-                            class="w-full rounded-lg border-gray-300 focus:border-[#5FA83D] focus:ring-[#5FA83D]"
-                            required>
+                        <input
+                            id="email"
+                            type="email"
+                            name="email"
+                            value="{{ old('email') }}"
+                            class="{{ $campo }}"
+                            placeholder="Digite o e-mail do paciente"
+                            required
+                        >
 
                         @error('email')
-                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            <p class="mt-1 text-sm text-red-600">
+                                {{ $message }}
+                            </p>
                         @enderror
+                    </div>
+
+                </div>
+
+            </section>
+
+            {{-- INFORMAÇÕES DE SAÚDE --}}
+            <section class="rounded-2xl border border-[#52745C]/10
+                            bg-white p-6 shadow-sm sm:p-8">
+
+                <div class="mb-6 flex items-center gap-3
+                            border-b border-gray-100 pb-5">
+
+                    <div class="flex h-11 w-11 items-center justify-center
+                                rounded-xl bg-[#F0EEE7]">
+
+                        <i class="ti ti-heartbeat text-2xl text-[#52745C]"></i>
 
                     </div>
+
+                    <div>
+                        <h2 class="text-lg font-semibold text-[#07311C]">
+                            Informações de saúde
+                        </h2>
+
+                        <p class="text-sm text-gray-500">
+                            Condições e necessidades de cuidado.
+                        </p>
+                    </div>
+
+                </div>
+
+                <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
 
                     {{-- Comorbidade --}}
                     <div>
-
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
-                            Comorbidade
+                        <label for="comorbidade" class="{{ $rotulo }}">
+                            Comorbidades
                         </label>
 
-                        <input type="text" name="comorbidade" value="{{ old('comorbidade') }}"
-                            class="w-full rounded-lg border-gray-300 focus:border-[#5FA83D] focus:ring-[#5FA83D]">
+                        <input
+                            id="comorbidade"
+                            type="text"
+                            name="comorbidade"
+                            value="{{ old('comorbidade') }}"
+                            class="{{ $campo }}"
+                            placeholder="Ex.: Hipertensão, diabetes"
+                        >
 
                         @error('comorbidade')
-                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            <p class="mt-1 text-sm text-red-600">
+                                {{ $message }}
+                            </p>
                         @enderror
-
                     </div>
 
-                    {{-- Condição Física --}}
+                    {{-- Condição física --}}
                     <div>
-
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
-                            Condição Física
+                        <label for="condicao_fisica" class="{{ $rotulo }}">
+                            Condição física
                         </label>
 
-                        <input type="text" name="condicao_fisica" value="{{ old('condicao_fisica') }}"
-                            class="w-full rounded-lg border-gray-300 focus:border-[#5FA83D] focus:ring-[#5FA83D]">
+                        <input
+                            id="condicao_fisica"
+                            type="text"
+                            name="condicao_fisica"
+                            value="{{ old('condicao_fisica') }}"
+                            class="{{ $campo }}"
+                            placeholder="Descreva a condição física"
+                        >
 
                         @error('condicao_fisica')
-                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            <p class="mt-1 text-sm text-red-600">
+                                {{ $message }}
+                            </p>
                         @enderror
-
                     </div>
 
                     {{-- Medicação --}}
                     <div>
-
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <label for="medicacao" class="{{ $rotulo }}">
                             Medicação
                         </label>
 
-                        <input type="text" name="medicacao" value="{{ old('medicacao') }}"
-                            class="w-full rounded-lg border-gray-300 focus:border-[#5FA83D] focus:ring-[#5FA83D]">
+                        <input
+                            id="medicacao"
+                            type="text"
+                            name="medicacao"
+                            value="{{ old('medicacao') }}"
+                            class="{{ $campo }}"
+                            placeholder="Informe a medicação"
+                        >
 
                         @error('medicacao')
-                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            <p class="mt-1 text-sm text-red-600">
+                                {{ $message }}
+                            </p>
                         @enderror
-
                     </div>
 
-                    {{-- Horário da Medicação --}}
+                    {{-- Horário da medicação --}}
                     <div>
-
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
-                            Horário da Medicação
+                        <label for="horario_medicacao" class="{{ $rotulo }}">
+                            Horário da medicação
                         </label>
 
-                        <input type="text" name="horario_medicacao" value="{{ old('horario_medicacao') }}"
-                            class="w-full rounded-lg border-gray-300 focus:border-[#5FA83D] focus:ring-[#5FA83D]">
+                        <input
+                            id="horario_medicacao"
+                            type="text"
+                            name="horario_medicacao"
+                            value="{{ old('horario_medicacao') }}"
+                            class="{{ $campo }}"
+                            placeholder="Ex.: 08:00 e 20:00"
+                        >
 
                         @error('horario_medicacao')
-                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            <p class="mt-1 text-sm text-red-600">
+                                {{ $message }}
+                            </p>
                         @enderror
+                    </div>
+
+                    {{-- Uso de fraldas --}}
+                    <div class="flex items-center md:col-span-2">
+
+                        <label class="flex cursor-pointer items-center gap-3
+                                      rounded-xl border border-[#D9E2DA]
+                                      bg-[#F8F2EE] px-5 py-4">
+
+                            <input
+                                type="hidden"
+                                name="usa_fraldas"
+                                value="0"
+                            >
+
+                            <input
+                                id="usa_fraldas"
+                                type="checkbox"
+                                name="usa_fraldas"
+                                value="1"
+                                @checked(old('usa_fraldas'))
+                                class="rounded border-[#D9E2DA]
+                                       text-[#52745C] focus:ring-[#52745C]"
+                            >
+
+                            <span class="text-sm font-medium text-[#07311C]">
+                                O paciente utiliza fraldas
+                            </span>
+
+                        </label>
 
                     </div>
+
+                </div>
+
+            </section>
+
+            {{-- ENDEREÇO --}}
+            <section class="rounded-2xl border border-[#52745C]/10
+                            bg-white p-6 shadow-sm sm:p-8">
+
+                <div class="mb-6 flex items-center gap-3
+                            border-b border-gray-100 pb-5">
+
+                    <div class="flex h-11 w-11 items-center justify-center
+                                rounded-xl bg-[#F0EEE7]">
+
+                        <i class="ti ti-map-pin text-2xl text-[#52745C]"></i>
+
+                    </div>
+
+                    <div>
+                        <h2 class="text-lg font-semibold text-[#07311C]">
+                            Endereço
+                        </h2>
+
+                        <p class="text-sm text-gray-500">
+                            Localização e dados residenciais.
+                        </p>
+                    </div>
+
+                </div>
+
+                <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
 
                     {{-- CEP --}}
                     <div>
-
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <label for="cep" class="{{ $rotulo }}">
                             CEP
                         </label>
 
-                        <input type="text" id="cep" name="cep" value="{{ old('cep') }}"
-                            class="w-full rounded-lg border-gray-300 focus:border-[#5FA83D] focus:ring-[#5FA83D]"
-                            required>
+                        <input
+                            id="cep"
+                            type="text"
+                            name="cep"
+                            value="{{ old('cep') }}"
+                            class="{{ $campo }}"
+                            placeholder="Digite o CEP"
+                            required
+                        >
 
                         @error('cep')
-                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            <p class="mt-1 text-sm text-red-600">
+                                {{ $message }}
+                            </p>
                         @enderror
-
                     </div>
 
                     {{-- Rua --}}
                     <div>
-
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <label for="rua" class="{{ $rotulo }}">
                             Rua
                         </label>
 
-                        <input type="text" id="rua" name="rua" value="{{ old('rua') }}"
-                            class="w-full rounded-lg border-gray-300 focus:border-[#5FA83D] focus:ring-[#5FA83D]"
-                            required>
+                        <input
+                            id="rua"
+                            type="text"
+                            name="rua"
+                            value="{{ old('rua') }}"
+                            class="{{ $campo }}"
+                            placeholder="Digite a rua"
+                            required
+                        >
 
                         @error('rua')
-                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            <p class="mt-1 text-sm text-red-600">
+                                {{ $message }}
+                            </p>
                         @enderror
-
                     </div>
 
                     {{-- Número --}}
                     <div>
-
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <label for="numero" class="{{ $rotulo }}">
                             Número
                         </label>
 
-                        <input type="text" name="numero" value="{{ old('numero') }}"
-                            class="w-full rounded-lg border-gray-300 focus:border-[#5FA83D] focus:ring-[#5FA83D]"
-                            required>
+                        <input
+                            id="numero"
+                            type="text"
+                            name="numero"
+                            value="{{ old('numero') }}"
+                            class="{{ $campo }}"
+                            placeholder="Número da residência"
+                            required
+                        >
 
                         @error('numero')
-                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            <p class="mt-1 text-sm text-red-600">
+                                {{ $message }}
+                            </p>
                         @enderror
-
                     </div>
 
                     {{-- Complemento --}}
                     <div>
-
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <label for="complemento" class="{{ $rotulo }}">
                             Complemento
                         </label>
 
-                        <input type="text" name="complemento" value="{{ old('complemento') }}"
-                            class="w-full rounded-lg border-gray-300 focus:border-[#5FA83D] focus:ring-[#5FA83D]">
+                        <input
+                            id="complemento"
+                            type="text"
+                            name="complemento"
+                            value="{{ old('complemento') }}"
+                            class="{{ $campo }}"
+                            placeholder="Apartamento, bloco, referência..."
+                        >
 
                         @error('complemento')
-                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            <p class="mt-1 text-sm text-red-600">
+                                {{ $message }}
+                            </p>
                         @enderror
-
                     </div>
 
                     {{-- Bairro --}}
                     <div>
-
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <label for="bairro" class="{{ $rotulo }}">
                             Bairro
                         </label>
 
-                        <input type="text" id="bairro" name="bairro" value="{{ old('bairro') }}"
-                            class="w-full rounded-lg border-gray-300 focus:border-[#5FA83D] focus:ring-[#5FA83D]"
-                            required>
+                        <input
+                            id="bairro"
+                            type="text"
+                            name="bairro"
+                            value="{{ old('bairro') }}"
+                            class="{{ $campo }}"
+                            placeholder="Digite o bairro"
+                            required
+                        >
 
                         @error('bairro')
-                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            <p class="mt-1 text-sm text-red-600">
+                                {{ $message }}
+                            </p>
                         @enderror
-
                     </div>
 
                     {{-- Cidade --}}
                     <div>
-
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <label for="cidade" class="{{ $rotulo }}">
                             Cidade
                         </label>
 
-                        <input type="text" id="cidade" name="cidade" value="{{ old('cidade') }}"
-                            class="w-full rounded-lg border-gray-300 focus:border-[#5FA83D] focus:ring-[#5FA83D]"
-                            required>
+                        <input
+                            id="cidade"
+                            type="text"
+                            name="cidade"
+                            value="{{ old('cidade') }}"
+                            class="{{ $campo }}"
+                            placeholder="Digite a cidade"
+                            required
+                        >
 
                         @error('cidade')
-                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            <p class="mt-1 text-sm text-red-600">
+                                {{ $message }}
+                            </p>
                         @enderror
-
                     </div>
 
                     {{-- Estado --}}
                     <div>
-
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <label for="estado" class="{{ $rotulo }}">
                             Estado
                         </label>
 
-                        <input type="text" id="estado" name="estado" value="{{ old('estado') }}"
-                            class="w-full rounded-lg border-gray-300 focus:border-[#5FA83D] focus:ring-[#5FA83D]"
-                            required>
+                        <input
+                            id="estado"
+                            type="text"
+                            name="estado"
+                            value="{{ old('estado') }}"
+                            class="{{ $campo }}"
+                            placeholder="Ex.: SP"
+                            required
+                        >
 
                         @error('estado')
-                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            <p class="mt-1 text-sm text-red-600">
+                                {{ $message }}
+                            </p>
                         @enderror
-
-                    </div>
-
-
-                    {{-- Usa Fraldas --}}
-                    <div class="flex items-center gap-3 mt-8">
-
-                        <input type="checkbox" id="usa_fraldas" name="usa_fraldas" value="1"
-                            {{ old('usa_fraldas') ? 'checked' : '' }}
-                            class="rounded border-gray-300 text-[#5FA83D] focus:ring-[#5FA83D]">
-
-                        <label for="usa_fraldas">
-                            Usa fraldas
-                        </label>
-
                     </div>
 
                 </div>
 
-                <div class="flex justify-end gap-4 mt-10">
+            </section>
 
-                    <a href="#" class="px-6 py-3 rounded-lg bg-gray-200 hover:bg-gray-300">
-                        Cancelar
-                    </a>
+            {{-- BOTÕES --}}
+            <div class="flex flex-wrap items-center justify-end gap-3 pb-6">
 
-                    <button type="submit" class="px-6 py-3 rounded-lg bg-[#5FA83D] hover:bg-[#4b8b2f] text-white">
+                <a href="{{ route('admin.paciente.index') }}"
+                   class="rounded-xl border border-[#D9E2DA]
+                          bg-white px-6 py-3 text-sm font-semibold
+                          text-[#07311C] transition-colors
+                          hover:bg-[#F0EEE7]">
 
-                        Salvar Paciente
+                    Cancelar
 
-                    </button>
+                </a>
 
-                </div>
+                <button
+                    type="submit"
+                    class="inline-flex items-center gap-2 rounded-xl
+                           bg-[#07311C] px-6 py-3 text-sm
+                           font-semibold text-white transition-colors
+                           hover:bg-[#52745C]">
 
-            </form>
+                    <i class="ti ti-device-floppy text-lg"></i>
+                    Salvar paciente
 
-        </div>
+                </button>
+
+            </div>
+
+        </form>
 
     </div>
 

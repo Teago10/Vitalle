@@ -1,62 +1,135 @@
+
 {{-- Sidebar --}}
 @props(['active' => 'dashboard'])
-        <aside class="fixed left-0 top-0 w-64 h-screen bg-[#232935] flex flex-col shrink-0">
 
-            {{-- Cabeçalho --}}
-            <div class="px-5 py-5 border-b border-white/10">
-                <div class="text-white text-lg font-semibold">Vitalle</div>
-                <div class="text-white/50 text-xs mt-0.5">
-                    Cuidado que transforma
-                </div>
-            </div>
+@php
+    // Identifica a página atual pelas rotas.
+    // O valor de $active continua funcionando como alternativa.
+    $paginaAtual = match (true) {
+        request()->routeIs('admin.paciente.*'),
+        request()->routeIs('admin.cuidador.*'),
+        request()->routeIs('admin.cuidadores.*')
+            => 'cadastros',
 
-            {{-- Navegação --}}
-            <nav class="flex-1 px-3 py-2 flex flex-col gap-1 overflow-y-auto">
+        request()->routeIs('atendimento.*')
+            => 'atendimentos',
 
-                <a href="{{route('admin.paciente.index')}}"
-                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm transition-colors
-                    {{ $active === 'cadastros' ? 'bg-[#5FA83D] text-white' : 'text-white/75 hover:bg-white/10 hover:text-white' }}">
-                    <i class="ti ti-user-plus text-lg"></i>
-                    Cadastros
-                </a>
+        request()->routeIs('avaliacao.*')
+            => 'avaliacoes',
 
-                <a href="{{route('atendimento.index')}}"
-                 class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm transition-colors
-                    {{ $active === 'atendimentos' ? 'bg-[#5FA83D] text-white' : 'text-white/75 hover:bg-white/10 hover:text-white' }}">
-                    <i class="ti ti-calendar-event text-lg"></i>
-                    Atendimentos
-                </a>
+        request()->routeIs('suporte.*')
+            => 'suporte',
 
-                <a href="{{route('avaliacao.index')}}"
-                 class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm transition-colors
-                    {{ $active === 'avaliacoes' ? 'bg-[#5FA83D] text-white' : 'text-white/75 hover:bg-white/10 hover:text-white' }}">
-                    <i class="ti ti-star text-lg"></i>
-                    Avaliações
-                </a>
+        default => $active,
+    };
 
-                <div class="h-px bg-white/10 my-3"></div>
+    $classeBase = 'relative flex items-center gap-4 px-4 py-3.5 rounded-xl text-base font-medium transition-colors duration-200';
 
-                <a class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm text-white/75 hover:bg-white/10 hover:text-white">
-                    <i class="ti ti-headset text-lg"></i>
-                    Suporte
-                </a>
+    $classeAtivo = 'bg-[#294D39] text-[#BBF0B9] border-l-4 border-[#BBF0B9]';
 
-            </nav>
+    $classeInativo = 'text-[#E4EDE6] hover:bg-white/10 hover:text-white';
+@endphp
 
-            {{-- Rodapé --}}
-            <div class="p-3 border-t border-white/10">
+<aside class="fixed left-0 top-0 w-64 h-screen bg-[#071A12] text-[#E4EDE6] flex flex-col shrink-0">
 
-                <a class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm text-white/75 hover:bg-white/10 hover:text-white">
-                    <i class="ti ti-settings text-lg"></i>
-                    Configurações
-                </a>
+    {{-- Cabeçalho --}}
+    <div class="px-5 py-6 border-b border-white/10">
 
-                <button
-                    class="w-full mt-2 flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm text-white/75 hover:bg-white/10 hover:text-white">
-                    <i class="ti ti-logout text-lg"></i>
-                    Sair
-                </button>
+        <div class="text-white text-2xl font-bold">
+            Vitalle
+        </div>
 
-            </div>
+        <div class="text-[#BBF0B9] text-sm mt-1">
+            Cuidado que transforma
+        </div>
 
-        </aside>
+    </div>
+
+    {{-- Navegação --}}
+    <nav class="flex-1 px-3 py-4 flex flex-col gap-2 overflow-y-auto">
+
+        {{-- Cadastros --}}
+        <a href="{{ route('admin.paciente.index') }}"
+           @if($paginaAtual === 'cadastros') aria-current="page" @endif
+           class="{{ $classeBase }} {{ $paginaAtual === 'cadastros' ? $classeAtivo : $classeInativo }}">
+
+            <i class="ti ti-user-plus text-2xl"></i>
+
+            <span>Cadastros</span>
+        </a>
+
+        {{-- Atendimentos --}}
+        <a href="{{ route('atendimento.index') }}"
+           @if($paginaAtual === 'atendimentos') aria-current="page" @endif
+           class="{{ $classeBase }} {{ $paginaAtual === 'atendimentos' ? $classeAtivo : $classeInativo }}">
+
+            <i class="ti ti-calendar-event text-2xl"></i>
+
+            <span>Atendimentos</span>
+        </a>
+
+        {{-- Avaliações --}}
+        <a href="{{ route('avaliacao.index') }}"
+           @if($paginaAtual === 'avaliacoes') aria-current="page" @endif
+           class="{{ $classeBase }} {{ $paginaAtual === 'avaliacoes' ? $classeAtivo : $classeInativo }}">
+
+            <i class="ti ti-star text-2xl"></i>
+
+            <span>Avaliações</span>
+        </a>
+
+        {{-- Divisória --}}
+        <div class="h-px bg-white/10 my-3"></div>
+
+        {{-- Suporte --}}
+        <a href="{{ route('suporte.index') }}"
+           @if($paginaAtual === 'suporte') aria-current="page" @endif
+           class="{{ $classeBase }} {{ $paginaAtual === 'suporte' ? $classeAtivo : $classeInativo }}">
+
+            <i class="ti ti-headset text-2xl"></i>
+
+            <span>Suporte</span>
+        </a>
+
+    </nav>
+
+    {{-- Rodapé --}}
+    <div class="p-3 border-t border-white/10 flex flex-col gap-2">
+
+       
+{{-- Configurações / Perfil --}}
+<a href="{{ route('profile.edit') }}"
+   @if(request()->routeIs('profile.edit'))
+       aria-current="page"
+   @endif
+   class="{{ $classeBase }}
+   {{ request()->routeIs('profile.edit')
+       ? $classeAtivo
+       : $classeInativo }}">
+
+    <i class="ti ti-settings text-2xl"></i>
+
+    <span>Configurações</span>
+</a>
+
+
+       
+{{-- Sair do sistema --}}
+<form method="POST" action="{{ route('logout') }}">
+    @csrf
+
+    <button
+        type="submit"
+        class="w-full text-left {{ $classeBase }} {{ $classeInativo }}">
+
+        <i class="ti ti-logout text-2xl"></i>
+
+        <span>Sair</span>
+
+    </button>
+</form>
+
+
+    </div>
+
+</aside>

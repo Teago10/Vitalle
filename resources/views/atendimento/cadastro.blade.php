@@ -1,457 +1,631 @@
+
 <x-sistema>
 
+    @php
+        $campo = 'w-full rounded-xl border border-[#D9E2DA] bg-[#F8F2EE] px-4 py-3 text-sm text-[#07311C] focus:border-[#52745C] focus:ring-[#52745C]';
+        $rotulo = 'mb-2 block text-sm font-semibold text-[#07311C]';
+    @endphp
 
-    <div class="max-w-6xl mx-auto">
+    <div class="mx-auto max-w-6xl">
 
-        <x-page-header title="Solicitar Atendimento" subtitle="Preencha os dados para solicitar um novo atendimento.">
+        {{-- CABEÇALHO --}}
+        <x-page-header
+            title="Solicitar Atendimento"
+            subtitle="Preencha os dados para solicitar um novo atendimento.">
 
             <a href="{{ route('atendimento.index') }}"
-                class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-5 py-3 rounded-lg flex items-center gap-2">
+               class="inline-flex items-center gap-2 rounded-xl
+                      border border-[#D9E2DA] bg-white px-5 py-3
+                      text-sm font-semibold text-[#07311C]
+                      transition-colors hover:bg-[#F0EEE7]">
 
-                <i class="ti ti-arrow-left"></i>
+                <i class="ti ti-arrow-left text-lg"></i>
                 Voltar
 
             </a>
 
         </x-page-header>
 
-
         {{-- MENSAGEM DE SUCESSO --}}
         @if (session('sucesso'))
-            <div class="mb-6 bg-green-100 border border-green-300 text-green-800 px-5 py-4 rounded-lg">
 
+            <div class="mb-6 flex items-center gap-3 rounded-xl
+                        border border-green-200 bg-green-50
+                        px-5 py-4 text-sm text-green-800">
+
+                <i class="ti ti-circle-check text-xl"></i>
                 {{ session('sucesso') }}
 
             </div>
+
         @endif
 
+        {{-- ERROS --}}
+        @if ($errors->any())
 
-        {{-- FORMULÁRIO --}}
-        <div class="bg-white rounded-3xl shadow-lg p-8">
+            <div class="mb-6 rounded-xl border border-red-200
+                        bg-red-50 p-5 text-red-700">
 
-            <form action="{{ route('atendimento.armazenar') }}" method="POST">
+                <p class="mb-2 font-semibold">
+                    Verifique os erros abaixo:
+                </p>
 
-                @csrf
+                <ul class="list-inside list-disc text-sm">
+                    @foreach ($errors->all() as $erro)
+                        <li>{{ $erro }}</li>
+                    @endforeach
+                </ul>
 
+            </div>
 
-                {{-- ==================== PACIENTE ==================== --}}
+        @endif
 
-                <div class="mb-8">
+        <form
+            action="{{ route('atendimento.armazenar') }}"
+            method="POST"
+            class="space-y-6">
 
-                    <h2 class="text-lg font-semibold text-gray-800 mb-4">
-                        Paciente
-                    </h2>
+            @csrf
 
+            {{-- CARD: PACIENTE --}}
+            <section class="rounded-2xl border border-[#52745C]/10
+                            bg-white p-6 shadow-sm sm:p-8">
 
-                    <label for="paciente" class="block text-sm font-medium text-gray-700 mb-2">
+                <div class="mb-6 flex items-center gap-3
+                            border-b border-gray-100 pb-5">
 
+                    <div class="flex h-11 w-11 items-center justify-center
+                                rounded-xl bg-[#F0EEE7]">
+
+                        <i class="ti ti-user-heart text-2xl text-[#52745C]"></i>
+
+                    </div>
+
+                    <div>
+                        <h2 class="text-lg font-semibold text-[#07311C]">
+                            Paciente
+                        </h2>
+
+                        <p class="text-sm text-gray-500">
+                            Selecione o paciente que receberá o atendimento.
+                        </p>
+                    </div>
+
+                </div>
+
+                <div>
+                    <label for="paciente" class="{{ $rotulo }}">
                         Selecione o paciente
-
                     </label>
 
-
-                    <select id="paciente" name="id_paciente"
-                        class="w-full rounded-lg border-gray-300 focus:border-[#5FA83D] focus:ring-[#5FA83D]"
-                        onchange="mostrarPaciente()" required>
+                    <select
+                        id="paciente"
+                        name="id_paciente"
+                        class="{{ $campo }}"
+                        onchange="mostrarPaciente()"
+                        required>
 
                         <option value="">
                             Selecione um paciente
                         </option>
 
-
                         @foreach ($pacientes as $paciente)
-                            <option value="{{ $paciente->id }}" data-nome="{{ $paciente->nome }}"
+
+                            <option
+                                value="{{ $paciente->id }}"
+                                data-nome="{{ $paciente->nome }}"
                                 data-nascimento="{{ $paciente->data_nascimento }}"
                                 data-comorbidade="{{ $paciente->comorbidade }}"
                                 data-condicao="{{ $paciente->condicao_fisica }}"
-                                data-fraldas="{{ $paciente->usa_fraldas }}" data-medicacao="{{ $paciente->medicacao }}"
-                                data-horario="{{ $paciente->horario_medicacao }}">
+                                data-fraldas="{{ $paciente->usa_fraldas }}"
+                                data-medicacao="{{ $paciente->medicacao }}"
+                                data-horario="{{ $paciente->horario_medicacao }}"
+                                @selected(old('id_paciente') == $paciente->id)>
 
                                 {{ $paciente->nome }}
 
                             </option>
+
                         @endforeach
 
                     </select>
 
+                    @error('id_paciente')
+                        <p class="mt-1 text-sm text-red-600">
+                            {{ $message }}
+                        </p>
+                    @enderror
+                </div>
 
-                    {{-- DADOS DO PACIENTE --}}
+                {{-- INFORMAÇÕES DO PACIENTE --}}
+                <div id="dadosPaciente"
+                     class="mt-5 hidden overflow-hidden rounded-xl
+                            border border-[#D9E2DA]">
 
-                    <div id="dadosPaciente" class="hidden mt-6 border rounded-lg p-5 bg-gray-50">
+                    <button
+                        type="button"
+                        id="botaoDetalhesPaciente"
+                        onclick="alternarDetalhesPaciente()"
+                        aria-expanded="false"
+                        class="flex w-full items-center justify-between
+                               gap-3 bg-[#F8F2EE] px-5 py-4 text-left
+                               transition-colors hover:bg-[#F0EEE7]">
 
-                        <h3 class="text-md font-semibold mb-4">
-                            Informações do paciente
-                        </h3>
+                        <span class="flex items-center gap-2
+                                     text-sm font-semibold text-[#07311C]">
 
+                            <i class="ti ti-heartbeat text-lg text-[#52745C]"></i>
+                            Informações de saúde do paciente
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        </span>
 
+                        <span class="flex items-center gap-2 text-sm
+                                     font-medium text-[#52745C]">
+
+                            <span id="textoDetalhesPaciente">
+                                Ver detalhes
+                            </span>
+
+                            <i id="iconeDetalhesPaciente"
+                               class="ti ti-chevron-down text-lg
+                                      transition-transform"></i>
+
+                        </span>
+
+                    </button>
+
+                    <div id="conteudoDetalhesPaciente"
+                         class="hidden bg-white px-5 py-5">
+
+                        <div class="grid grid-cols-1 gap-5
+                                    sm:grid-cols-2 lg:grid-cols-3">
 
                             <div>
-
-                                <p class="text-sm text-gray-500">
+                                <p class="mb-1 text-xs text-gray-500">
                                     Nome
                                 </p>
-
-                                <p id="nomePaciente" class="font-medium">
-                                </p>
-
+                                <p id="nomePaciente"
+                                   class="text-sm font-semibold text-[#07311C]"></p>
                             </div>
 
-
                             <div>
-
-                                <p class="text-sm text-gray-500">
+                                <p class="mb-1 text-xs text-gray-500">
                                     Data de nascimento
                                 </p>
-
-                                <p id="nascimentoPaciente" class="font-medium">
-                                </p>
-
+                                <p id="nascimentoPaciente"
+                                   class="text-sm font-semibold text-[#07311C]"></p>
                             </div>
 
-
                             <div>
-
-                                <p class="text-sm text-gray-500">
-                                    Comorbidade
+                                <p class="mb-1 text-xs text-gray-500">
+                                    Comorbidades
                                 </p>
-
-                                <p id="comorbidadePaciente" class="font-medium">
-                                </p>
-
+                                <p id="comorbidadePaciente"
+                                   class="break-words text-sm font-semibold text-[#07311C]"></p>
                             </div>
 
-
                             <div>
-
-                                <p class="text-sm text-gray-500">
+                                <p class="mb-1 text-xs text-gray-500">
                                     Condição física
                                 </p>
-
-                                <p id="condicaoPaciente" class="font-medium">
-                                </p>
-
+                                <p id="condicaoPaciente"
+                                   class="break-words text-sm font-semibold text-[#07311C]"></p>
                             </div>
 
-
                             <div>
-
-                                <p class="text-sm text-gray-500">
-                                    Usa fraldas?
+                                <p class="mb-1 text-xs text-gray-500">
+                                    Uso de fraldas
                                 </p>
-
-                                <p id="fraldasPaciente" class="font-medium">
-                                </p>
-
+                                <p id="fraldasPaciente"
+                                   class="text-sm font-semibold text-[#07311C]"></p>
                             </div>
 
-
                             <div>
-
-                                <p class="text-sm text-gray-500">
+                                <p class="mb-1 text-xs text-gray-500">
                                     Medicação
                                 </p>
-
-                                <p id="medicacaoPaciente" class="font-medium">
-                                </p>
-
+                                <p id="medicacaoPaciente"
+                                   class="break-words text-sm font-semibold text-[#07311C]"></p>
                             </div>
-
 
                             <div>
-
-                                <p class="text-sm text-gray-500">
+                                <p class="mb-1 text-xs text-gray-500">
                                     Horário da medicação
                                 </p>
-
-                                <p id="horarioPaciente" class="font-medium">
-                                </p>
-
+                                <p id="horarioPaciente"
+                                   class="text-sm font-semibold text-[#07311C]"></p>
                             </div>
 
-
                         </div>
 
                     </div>
 
                 </div>
 
+            </section>
 
-                {{-- ==================== DADOS DO ATENDIMENTO ==================== --}}
+            {{-- CARD: DADOS DO ATENDIMENTO --}}
+            <section class="rounded-2xl border border-[#52745C]/10
+                            bg-white p-6 shadow-sm sm:p-8">
 
-                <div class="mb-8">
+                <div class="mb-6 flex items-center gap-3
+                            border-b border-gray-100 pb-5">
 
-                    <h2 class="text-lg font-semibold text-gray-800 mb-4">
-                        Dados do atendimento
-                    </h2>
+                    <div class="flex h-11 w-11 items-center justify-center
+                                rounded-xl bg-[#F0EEE7]">
 
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-
-                        {{-- DATA --}}
-
-                        <div>
-
-                            <label for="data_atendimento" class="block text-sm font-medium text-gray-700 mb-2">
-
-                                Data
-
-                            </label>
-
-
-                            <input type="date" id="data_atendimento" name="data_atendimento"
-                                class="w-full rounded-lg border-gray-300 focus:border-[#5FA83D] focus:ring-[#5FA83D]"
-                                required>
-
-                        </div>
-
-
-                        {{-- JORNADA --}}
-
-                        <div>
-
-                            <label for="tipo_jornada" class="block text-sm font-medium text-gray-700 mb-2">
-
-                                Tipo de jornada
-
-                            </label>
-
-
-                            <select id="tipo_jornada" name="tipo_jornada"
-                                class="w-full rounded-lg border-gray-300 focus:border-[#5FA83D] focus:ring-[#5FA83D]"
-                                onchange="atualizarValor()" required>
-
-                                <option value="">
-                                    Selecione
-                                </option>
-
-                                <option value="12h_dia">
-                                    12h Dia
-                                </option>
-
-                                <option value="12h_noite">
-                                    12h Noite
-                                </option>
-
-                                <option value="6h">
-                                    6h
-                                </option>
-
-                                <option value="cuidado_avulso">
-                                    Cuidado Avulso
-                                </option>
-
-                            </select>
-
-                        </div>
-
-
-                        {{-- HORÁRIO INÍCIO --}}
-
-                        <div>
-
-                            <label for="horario_inicio" class="block text-sm font-medium text-gray-700 mb-2">
-
-                                Horário de início
-
-                            </label>
-
-
-                            <input type="time" id="horario_inicio" name="horario_inicio"
-                                class="w-full rounded-lg border-gray-300 focus:border-[#5FA83D] focus:ring-[#5FA83D]"
-                                required>
-
-                        </div>
-
-
-                        {{-- HORÁRIO FIM --}}
-
-                        <div>
-
-                            <label for="horario_fim" class="block text-sm font-medium text-gray-700 mb-2">
-
-                                Horário de término
-
-                            </label>
-
-
-                            <input type="time" id="horario_fim" name="horario_fim"
-                                class="w-full rounded-lg border-gray-300 focus:border-[#5FA83D] focus:ring-[#5FA83D]"
-                                required>
-
-                        </div>
+                        <i class="ti ti-calendar-event text-2xl text-[#52745C]"></i>
 
                     </div>
 
+                    <div>
+                        <h2 class="text-lg font-semibold text-[#07311C]">
+                            Dados do atendimento
+                        </h2>
 
-                    {{-- VALOR --}}
+                        <p class="text-sm text-gray-500">
+                            Defina a data, jornada e horários do atendimento.
+                        </p>
+                    </div>
 
-                    <div class="mt-6">
+                </div>
 
-                        <label for="valor" class="block text-sm font-medium text-gray-700 mb-2">
+                <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
 
-                            Valor do atendimento
-
+                    {{-- DATA --}}
+                    <div>
+                        <label for="data_atendimento" class="{{ $rotulo }}">
+                            Data do atendimento
                         </label>
 
+                        <input
+                            id="data_atendimento"
+                            type="date"
+                            name="data_atendimento"
+                            value="{{ old('data_atendimento') }}"
+                            class="{{ $campo }}"
+                            required
+                        >
 
-                        <input type="text" id="valor" name="valor"
-                            class="w-full rounded-lg border-gray-300 bg-gray-100" readonly>
+                        @error('data_atendimento')
+                            <p class="mt-1 text-sm text-red-600">
+                                {{ $message }}
+                            </p>
+                        @enderror
+                    </div>
 
+                    {{-- JORNADA --}}
+                    <div>
+                        <label for="tipo_jornada" class="{{ $rotulo }}">
+                            Tipo de jornada
+                        </label>
+
+                        <select
+                            id="tipo_jornada"
+                            name="tipo_jornada"
+                            class="{{ $campo }}"
+                            onchange="atualizarValor()"
+                            required>
+
+                            <option value="">
+                                Selecione uma jornada
+                            </option>
+
+                            <option value="12h_dia"
+                                @selected(old('tipo_jornada') == '12h_dia')>
+                                12 horas — Dia
+                            </option>
+
+                            <option value="12h_noite"
+                                @selected(old('tipo_jornada') == '12h_noite')>
+                                12 horas — Noite
+                            </option>
+
+                            <option value="6h"
+                                @selected(old('tipo_jornada') == '6h')>
+                                6 horas
+                            </option>
+
+                            <option value="cuidado_avulso"
+                                @selected(old('tipo_jornada') == 'cuidado_avulso')>
+                                Cuidado avulso
+                            </option>
+
+                        </select>
+
+                        @error('tipo_jornada')
+                            <p class="mt-1 text-sm text-red-600">
+                                {{ $message }}
+                            </p>
+                        @enderror
+                    </div>
+
+                    {{-- HORÁRIO DE INÍCIO --}}
+                    <div>
+                        <label for="horario_inicio" class="{{ $rotulo }}">
+                            Horário de início
+                        </label>
+
+                        <input
+                            id="horario_inicio"
+                            type="time"
+                            name="horario_inicio"
+                            value="{{ old('horario_inicio') }}"
+                            class="{{ $campo }}"
+                            required
+                        >
+
+                        @error('horario_inicio')
+                            <p class="mt-1 text-sm text-red-600">
+                                {{ $message }}
+                            </p>
+                        @enderror
+                    </div>
+
+                    {{-- HORÁRIO DE TÉRMINO --}}
+                    <div>
+                        <label for="horario_fim" class="{{ $rotulo }}">
+                            Horário de término
+                        </label>
+
+                        <input
+                            id="horario_fim"
+                            type="time"
+                            name="horario_fim"
+                            value="{{ old('horario_fim') }}"
+                            class="{{ $campo }}"
+                            required
+                        >
+
+                        @error('horario_fim')
+                            <p class="mt-1 text-sm text-red-600">
+                                {{ $message }}
+                            </p>
+                        @enderror
                     </div>
 
                 </div>
 
+                {{-- VALOR --}}
+                <div class="mt-6 rounded-xl border border-[#D9E2DA]
+                            bg-[#F8F2EE] p-5">
 
-                {{-- ==================== CUIDADOR ==================== --}}
+                    <div class="flex flex-wrap items-center
+                                justify-between gap-4">
 
-                <div class="mb-8">
+                        <div>
+                            <p class="text-sm font-medium text-[#52745C]">
+                                Valor do atendimento
+                            </p>
 
-                    <h2 class="text-lg font-semibold text-gray-800 mb-4">
-                        Cuidador
-                    </h2>
+                            <p class="mt-1 text-xs text-gray-500">
+                                Calculado automaticamente conforme a jornada.
+                            </p>
+                        </div>
 
+                        <p id="valorExibido"
+                           class="text-2xl font-bold text-[#07311C]">
 
-                    <label for="cuidador" class="block text-sm font-medium text-gray-700 mb-2">
+                            R$ 0,00
 
-                        Selecione o cuidador
+                        </p>
 
+                    </div>
+
+                    {{-- VALOR ENVIADO AO LARAVEL --}}
+                    <input
+                        type="hidden"
+                        id="valor"
+                        name="valor"
+                        value="{{ old('valor') }}"
+                    >
+
+                    @error('valor')
+                        <p class="mt-2 text-sm text-red-600">
+                            {{ $message }}
+                        </p>
+                    @enderror
+
+                </div>
+
+            </section>
+
+            {{-- CARD: CUIDADOR --}}
+            <section class="rounded-2xl border border-[#52745C]/10
+                            bg-white p-6 shadow-sm sm:p-8">
+
+                <div class="mb-6 flex items-center gap-3
+                            border-b border-gray-100 pb-5">
+
+                    <div class="flex h-11 w-11 items-center justify-center
+                                rounded-xl bg-[#F0EEE7]">
+
+                        <i class="ti ti-user-shield text-2xl text-[#52745C]"></i>
+
+                    </div>
+
+                    <div>
+                        <h2 class="text-lg font-semibold text-[#07311C]">
+                            Cuidador
+                        </h2>
+
+                        <p class="text-sm text-gray-500">
+                            Selecione o profissional responsável pelo atendimento.
+                        </p>
+                    </div>
+
+                </div>
+
+                <div>
+                    <label for="cuidador" class="{{ $rotulo }}">
+                        Cuidador responsável
                     </label>
 
-
-                    <select id="cuidador" name="id_cuidador"
-                        class="w-full rounded-lg border-gray-300 focus:border-[#5FA83D] focus:ring-[#5FA83D]">
+                    <select
+                        id="cuidador"
+                        name="id_cuidador"
+                        class="{{ $campo }}">
 
                         <option value="">
                             Selecione um cuidador
                         </option>
 
-
                         @foreach ($cuidadores as $cuidador)
-                            <option value="{{ $cuidador->id }}">
+
+                            <option
+                                value="{{ $cuidador->id }}"
+                                @selected(old('id_cuidador') == $cuidador->id)>
+
                                 {{ $cuidador->nome }}
+
                             </option>
+
                         @endforeach
 
                     </select>
 
-                </div>
+                    @error('id_cuidador')
+                        <p class="mt-1 text-sm text-red-600">
+                            {{ $message }}
+                        </p>
+                    @enderror
 
-
-                {{-- BOTÕES --}}
-
-                <div class="flex justify-end gap-4 mt-10">
-
-                    <a href="{{ route('atendimento.index') }}"
-                        class="px-6 py-3 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-800">
-
-                        Cancelar
-
-                    </a>
-
-
-                    <button type="submit" class="px-6 py-3 rounded-lg bg-[#5FA83D] hover:bg-[#4b8b2f] text-white">
-
-                        Solicitar Atendimento
-
-                    </button>
+                    <p class="mt-2 text-xs text-gray-500">
+                        Selecione o cuidador que realizará o atendimento.
+                    </p>
 
                 </div>
 
+            </section>
 
-            </form>
+            {{-- BOTÕES --}}
+            <div class="flex flex-wrap items-center justify-end gap-3 pb-6">
 
-        </div>
+                <a href="{{ route('atendimento.index') }}"
+                   class="rounded-xl border border-[#D9E2DA]
+                          bg-white px-6 py-3 text-sm font-semibold
+                          text-[#07311C] transition-colors
+                          hover:bg-[#F0EEE7]">
+
+                    Cancelar
+
+                </a>
+
+                <button
+                    type="submit"
+                    class="inline-flex items-center gap-2 rounded-xl
+                           bg-[#07311C] px-6 py-3 text-sm
+                           font-semibold text-white transition-colors
+                           hover:bg-[#52745C]">
+
+                    <i class="ti ti-device-floppy text-lg"></i>
+                    Solicitar atendimento
+
+                </button>
+
+            </div>
+
+        </form>
 
     </div>
 
-
-    {{-- ==================== JAVASCRIPT ==================== --}}
-
+    {{-- JAVASCRIPT --}}
     <script>
         function mostrarPaciente() {
             const select = document.getElementById('paciente');
-
             const opcao = select.options[select.selectedIndex];
+            const dados = document.getElementById('dadosPaciente');
 
-            const dadosPaciente =
-                document.getElementById('dadosPaciente');
-
-
-            if (select.value === '') {
-                dadosPaciente.classList.add('hidden');
-
+            if (!select.value) {
+                dados.classList.add('hidden');
+                document.getElementById('conteudoDetalhesPaciente').classList.add('hidden');
+                document.getElementById('textoDetalhesPaciente').textContent = 'Ver detalhes';
+                document.getElementById('iconeDetalhesPaciente').classList.remove('rotate-180');
+                document.getElementById('botaoDetalhesPaciente').setAttribute('aria-expanded', 'false');
                 return;
             }
 
+            const preencher = (id, valor) => {
+                document.getElementById(id).textContent = valor || 'Não informado';
+            };
 
-            document.getElementById('nomePaciente').textContent =
-                opcao.dataset.nome;
+            preencher('nomePaciente', opcao.dataset.nome);
 
+            const nascimento = opcao.dataset.nascimento;
 
-            document.getElementById('nascimentoPaciente').textContent =
-                opcao.dataset.nascimento;
+            if (nascimento) {
+                const partes = nascimento.substring(0, 10).split('-');
 
-
-            document.getElementById('comorbidadePaciente').textContent =
-                opcao.dataset.comorbidade || 'Não informado';
-
-
-            document.getElementById('condicaoPaciente').textContent =
-                opcao.dataset.condicao || 'Não informado';
-
-
-            let usaFraldas = opcao.dataset.fraldas;
-
-
-            if (usaFraldas == '1') {
-                usaFraldas = 'Sim';
-            } else if (usaFraldas == '0') {
-                usaFraldas = 'Não';
+                preencher(
+                    'nascimentoPaciente',
+                    partes.length === 3
+                        ? `${partes[2]}/${partes[1]}/${partes[0]}`
+                        : nascimento
+                );
             } else {
-                usaFraldas = 'Não informado';
+                preencher('nascimentoPaciente', '');
             }
 
+            preencher('comorbidadePaciente', opcao.dataset.comorbidade);
+            preencher('condicaoPaciente', opcao.dataset.condicao);
+            preencher('medicacaoPaciente', opcao.dataset.medicacao);
+            preencher('horarioPaciente', opcao.dataset.horario);
 
-            document.getElementById('fraldasPaciente').textContent =
-                usaFraldas;
+            const fraldas = opcao.dataset.fraldas;
 
+            preencher(
+                'fraldasPaciente',
+                fraldas === '1' ? 'Sim' :
+                fraldas === '0' ? 'Não' : 'Não informado'
+            );
 
-            document.getElementById('medicacaoPaciente').textContent =
-                opcao.dataset.medicacao || 'Não informado';
-
-
-            document.getElementById('horarioPaciente').textContent =
-                opcao.dataset.horario || 'Não informado';
-
-
-            dadosPaciente.classList.remove('hidden');
+            dados.classList.remove('hidden');
         }
 
+        function alternarDetalhesPaciente() {
+            const conteudo = document.getElementById('conteudoDetalhesPaciente');
+            const texto = document.getElementById('textoDetalhesPaciente');
+            const icone = document.getElementById('iconeDetalhesPaciente');
+            const botao = document.getElementById('botaoDetalhesPaciente');
+
+            const estavaFechado = conteudo.classList.contains('hidden');
+
+            conteudo.classList.toggle('hidden');
+
+            texto.textContent = estavaFechado
+                ? 'Ocultar detalhes'
+                : 'Ver detalhes';
+
+            icone.classList.toggle('rotate-180', estavaFechado);
+            botao.setAttribute('aria-expanded', String(estavaFechado));
+        }
 
         function atualizarValor() {
-            const jornada =
-                document.getElementById('tipo_jornada').value;
+            const jornada = document.getElementById('tipo_jornada').value;
+            const valor = document.getElementById('valor');
+            const exibido = document.getElementById('valorExibido');
 
-            const valor =
-                document.getElementById('valor');
+            const precos = {
+                '12h_dia': 180,
+                '12h_noite': 200,
+                '6h': 100,
+                'cuidado_avulso': 80
+            };
 
+            const preco = precos[jornada] ?? 0;
 
-            if (jornada === '12h_dia') {
-                valor.value = 'R$ 180,00';
-            } else if (jornada === '12h_noite') {
-                valor.value = 'R$ 200,00';
-            } else if (jornada === '6h') {
-                valor.value = 'R$ 100,00';
-            } else if (jornada === 'cuidado_avulso') {
-                valor.value = 'R$ 80,00';
-            } else {
-                valor.value = '';
-            }
+            valor.value = preco.toFixed(2);
+
+            exibido.textContent = preco.toLocaleString('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            });
         }
-    </script>
 
+        document.addEventListener('DOMContentLoaded', function () {
+            mostrarPaciente();
+            atualizarValor();
+        });
+    </script>
 
 </x-sistema>
