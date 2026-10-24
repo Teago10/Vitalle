@@ -2,8 +2,10 @@
 <x-guest-layout>
 
     {{-- Biblioteca de ícones Tabler --}}
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css"
+    >
 
     {{-- Cabeçalho --}}
     <div class="mb-8 text-center">
@@ -27,18 +29,122 @@
     </div>
 
     {{-- Formulário --}}
-    <form method="POST"
-          action="{{ route('register') }}"
-          class="space-y-5">
+    <form
+        method="POST"
+        action="{{ route('register') }}"
+        class="space-y-5">
 
         @csrf
 
-        {{-- Nome --}}
+        {{-- TIPO DE USUÁRIO --}}
         <div>
 
-            <label for="name"
-                   class="mb-2 block text-sm font-semibold text-[#07311C]">
+            <label class="mb-3 block text-sm font-semibold text-[#07311C]">
+                Como deseja utilizar o Vitalle?
+            </label>
+
+            <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+
+                {{-- RESPONSÁVEL --}}
+                <label class="relative cursor-pointer">
+
+                    <input
+                        type="radio"
+                        name="tipo_usuario"
+                        value="responsavel"
+                        class="peer sr-only"
+                        {{ old('tipo_usuario', 'responsavel') === 'responsavel' ? 'checked' : '' }}
+                        required
+                    >
+
+                    <div class="flex h-full flex-col items-center
+                                rounded-xl border-2 border-[#D9E2DA]
+                                bg-[#F8F2EE] px-4 py-5 text-center
+                                transition-all hover:border-[#52745C]
+                                peer-checked:border-[#52745C]
+                                peer-checked:bg-[#EAF2EB]
+                                peer-focus-visible:ring-2
+                                peer-focus-visible:ring-[#52745C]">
+
+                        <div class="mb-3 flex h-12 w-12
+                                    items-center justify-center
+                                    rounded-xl bg-white">
+
+                            <i class="ti ti-user-heart text-2xl text-[#52745C]"></i>
+
+                        </div>
+
+                        <span class="text-sm font-bold text-[#07311C]">
+                            Responsável
+                        </span>
+
+                        <span class="mt-1 text-xs leading-relaxed text-[#52745C]">
+                            Quero solicitar cuidados para um paciente.
+                        </span>
+
+                    </div>
+
+                </label>
+
+                {{-- CUIDADOR --}}
+                <label class="relative cursor-pointer">
+
+                    <input
+                        type="radio"
+                        name="tipo_usuario"
+                        value="cuidador"
+                        class="peer sr-only"
+                        {{ old('tipo_usuario') === 'cuidador' ? 'checked' : '' }}
+                        required
+                    >
+
+                    <div class="flex h-full flex-col items-center
+                                rounded-xl border-2 border-[#D9E2DA]
+                                bg-[#F8F2EE] px-4 py-5 text-center
+                                transition-all hover:border-[#52745C]
+                                peer-checked:border-[#52745C]
+                                peer-checked:bg-[#EAF2EB]
+                                peer-focus-visible:ring-2
+                                peer-focus-visible:ring-[#52745C]">
+
+                        <div class="mb-3 flex h-12 w-12
+                                    items-center justify-center
+                                    rounded-xl bg-white">
+
+                            <i class="ti ti-stethoscope text-2xl text-[#52745C]"></i>
+
+                        </div>
+
+                        <span class="text-sm font-bold text-[#07311C]">
+                            Cuidador
+                        </span>
+
+                        <span class="mt-1 text-xs leading-relaxed text-[#52745C]">
+                            Quero oferecer serviços de cuidado.
+                        </span>
+
+                    </div>
+
+                </label>
+
+            </div>
+
+            <x-input-error
+                :messages="$errors->get('tipo_usuario')"
+                class="mt-2"
+            />
+
+        </div>
+
+        {{-- NOME --}}
+        <div>
+
+            <label
+                for="name"
+                class="mb-2 block text-sm font-semibold text-[#07311C]">
+
                 Nome completo
+
             </label>
 
             <div class="relative">
@@ -73,12 +179,15 @@
 
         </div>
 
-        {{-- E-mail --}}
+        {{-- E-MAIL --}}
         <div>
 
-            <label for="email"
-                   class="mb-2 block text-sm font-semibold text-[#07311C]">
+            <label
+                for="email"
+                class="mb-2 block text-sm font-semibold text-[#07311C]">
+
                 E-mail
+
             </label>
 
             <div class="relative">
@@ -112,12 +221,15 @@
 
         </div>
 
-        {{-- Senha --}}
+        {{-- SENHA --}}
         <div>
 
-            <label for="password"
-                   class="mb-2 block text-sm font-semibold text-[#07311C]">
+            <label
+                for="password"
+                class="mb-2 block text-sm font-semibold text-[#07311C]">
+
                 Senha
+
             </label>
 
             <div class="relative">
@@ -162,12 +274,15 @@
 
         </div>
 
-        {{-- Confirmar senha --}}
+        {{-- CONFIRMAR SENHA --}}
         <div>
 
-            <label for="password_confirmation"
-                   class="mb-2 block text-sm font-semibold text-[#07311C]">
+            <label
+                for="password_confirmation"
+                class="mb-2 block text-sm font-semibold text-[#07311C]">
+
                 Confirmar senha
+
             </label>
 
             <div class="relative">
@@ -212,7 +327,7 @@
 
         </div>
 
-        {{-- Botão cadastrar --}}
+        {{-- BOTÃO CADASTRAR --}}
         <div class="pt-2">
 
             <button
@@ -233,16 +348,17 @@
 
         </div>
 
-        {{-- Link para login --}}
+        {{-- LINK PARA LOGIN --}}
         <div class="pt-4 text-center">
 
             <p class="text-sm text-gray-600">
 
                 Já possui uma conta?
 
-                <a href="{{ route('login') }}"
-                   class="font-semibold text-[#52745C]
-                          hover:text-[#07311C] hover:underline">
+                <a
+                    href="{{ route('login') }}"
+                    class="font-semibold text-[#52745C]
+                           hover:text-[#07311C] hover:underline">
 
                     Faça login
 
@@ -254,7 +370,7 @@
 
     </form>
 
-    {{-- Mostrar e ocultar senhas --}}
+    {{-- MOSTRAR E OCULTAR SENHAS --}}
     <script>
         function alternarSenha(campoId, iconeId) {
 
@@ -276,7 +392,6 @@
                 icone.classList.add('ti-eye');
 
             }
-
         }
     </script>
 

@@ -12,6 +12,7 @@ class Responsavel extends Model
     protected $table = 'responsaveis';
 
     protected $fillable = [
+        'user_id',
         'nome',
         'telefone',
         'cpf',
@@ -30,6 +31,11 @@ class Responsavel extends Model
         'password',
     ];
 
+    // Relacionamento com o usuário autenticado
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 
     // Relacionamento com pacientes
     public function pacientes()

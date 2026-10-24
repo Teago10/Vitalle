@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -16,6 +15,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'tipo_usuario',
     ];
 
     protected $hidden = [
@@ -29,5 +29,17 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    // Relacionamento com o perfil de cuidador
+    public function cuidador()
+    {
+        return $this->hasOne(Cuidador::class, 'user_id');
+    }
+
+    // Relacionamento com o perfil de responsável
+    public function responsavel()
+    {
+        return $this->hasOne(Responsavel::class, 'user_id');
     }
 }

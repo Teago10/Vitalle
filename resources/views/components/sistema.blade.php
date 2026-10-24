@@ -25,12 +25,11 @@
         {{-- Sidebar --}}
         <x-sidebar />
 
-        <div class="ml-64">
-
-
+        {{-- Área ao lado da sidebar --}}
+        <div class="ml-72">
 
             {{-- Conteúdo principal --}}
-            <main class="bg-white min-h-screen p-8">
+            <main class="min-h-screen bg-white p-8">
 
                 {{ $slot }}
 
