@@ -2,11 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-
 :root {
     --verde-escuro: #07311C;
     --verde-vitalle: #52745C;
     --verde-limao: #BBF0B9;
     --fundo: #F8F2EE;
-    --fundo-card: #F0EEE7;
+    --fundo-card: #fdf9f9;
+}
+
+/* Fundo dos cards do Vitalle */
+main .bg-white {
+    background-color: var(--fundo-card);
 }

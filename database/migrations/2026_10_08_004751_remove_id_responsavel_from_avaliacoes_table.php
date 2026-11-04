@@ -1,4 +1,3 @@
-
 <?php
 
 use Illuminate\Database\Migrations\Migration;
@@ -9,6 +8,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (! Schema::hasColumn('avaliacoes', 'id_responsavel')) {
+            return;
+        }
+
         Schema::table('avaliacoes', function (Blueprint $table) {
             $table->dropForeign(['id_responsavel']);
             $table->dropColumn('id_responsavel');
@@ -17,6 +20,10 @@ return new class extends Migration
 
     public function down(): void
     {
+        if (Schema::hasColumn('avaliacoes', 'id_responsavel')) {
+            return;
+        }
+
         Schema::table('avaliacoes', function (Blueprint $table) {
             $table->foreignId('id_responsavel')
                 ->constrained('responsaveis')

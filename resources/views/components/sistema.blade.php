@@ -29,7 +29,7 @@
         <div class="ml-72">
 
             {{-- Conteúdo principal --}}
-            <main class="min-h-screen bg-white p-8">
+            <main class="min-h-screen bg-[var(--fundo)] p-8">
 
                 {{ $slot }}
 
