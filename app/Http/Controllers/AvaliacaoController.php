@@ -34,9 +34,21 @@ class AvaliacaoController extends Controller
     {
         $dados = $request->validate([
             'id_cuidador' => 'required|exists:cuidadores,id',
-            'nota' => 'required|numeric|min:0.5|max:5',
+            'nota' => [
+                'required',
+                'numeric',
+                'min:0.5',
+                'max:5',
+                function ($attribute, $value, $fail) {
+                    if (fmod((float) $value * 2, 1.0) != 0.0) {
+                        $fail('A nota deve variar de 0,5 em 0,5.');
+                    }
+                },
+            ],
             'comentario' => 'required|string|max:1000',
         ]);
+
+        $dados['comentario'] = trim($dados['comentario']);
 
         $userId = Auth::id();
 

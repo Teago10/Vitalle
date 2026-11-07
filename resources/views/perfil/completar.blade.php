@@ -263,37 +263,46 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
 
+            const campoCpf = document.getElementById('cpf');
             const campoCep = document.getElementById('cep');
             const campoRua = document.getElementById('rua');
             const campoBairro = document.getElementById('bairro');
             const campoCidade = document.getElementById('cidade');
             const campoEstado = document.getElementById('estado');
 
+            if (campoCpf) {
+                campoCpf.addEventListener('input', function() {
+                    const cpf = campoCpf.value.replace(/\D/g, '').slice(0, 11);
+                    campoCpf.value = cpf.length > 9
+                        ? cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4')
+                        : cpf.length > 6
+                            ? cpf.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3')
+                            : cpf.length > 3
+                                ? cpf.replace(/(\d{3})(\d{1,3})/, '$1.$2')
+                                : cpf;
+                });
+            }
+
+            if (!campoCep) {
+                return;
+            }
+
             let ultimaConsulta = 0;
 
             campoCep.addEventListener('input', async function() {
-
-                // Remove caracteres que não são números.
-                const cep = campoCep.value.replace(/\D/g, '');
-
-                // Aplica a máscara 00000-000.
+                const cep = campoCep.value.replace(/\D/g, '').slice(0, 8);
                 campoCep.value = cep.length > 5 ?
                     cep.slice(0, 5) + '-' + cep.slice(5, 8) :
                     cep;
 
-                // Identifica a consulta mais recente.
                 const consultaAtual = ++ultimaConsulta;
 
-                // Só consulta quando o CEP tiver 8 dígitos.
                 if (cep.length !== 8) {
                     return;
                 }
 
                 try {
-
-                    const resposta = await fetch(
-                        `https://viacep.com.br/ws/${cep}/json/`
-                    );
+                    const resposta = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
 
                     if (!resposta.ok) {
                         throw new Error('Erro na consulta do CEP.');
@@ -301,7 +310,6 @@
 
                     const endereco = await resposta.json();
 
-                    // Evita preencher dados de uma consulta antiga.
                     if (consultaAtual !== ultimaConsulta) {
                         return;
                     }
@@ -311,30 +319,21 @@
                         return;
                     }
 
-                    // Preenche os campos automaticamente.
-                    campoRua.value = endereco.logradouro || '';
-                    campoBairro.value = endereco.bairro || '';
-                    campoCidade.value = endereco.localidade || '';
-                    campoEstado.value = endereco.uf || '';
+                    if (campoRua) campoRua.value = endereco.logradouro || '';
+                    if (campoBairro) campoBairro.value = endereco.bairro || '';
+                    if (campoCidade) campoCidade.value = endereco.localidade || '';
+                    if (campoEstado) campoEstado.value = endereco.uf || '';
 
                 } catch (erro) {
-
                     if (consultaAtual !== ultimaConsulta) {
                         return;
                     }
 
                     console.error('Erro ao consultar CEP:', erro);
-
-                    alert(
-                        'Não foi possível consultar o CEP. ' +
-                        'Preencha o endereço manualmente.'
-                    );
+                    alert('Não foi possível consultar o CEP. Preencha o endereço manualmente.');
                 }
-
             });
-
         });
     </script>
-
 
 </x-guest-layout>

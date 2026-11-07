@@ -1,4 +1,3 @@
-
 <?php
 
 use Illuminate\Http\Request;
@@ -27,6 +26,8 @@ Route::get('/teste', function () {
 Route::post('/login', [AuthController::class, 'login']);
 
 // Rotas de avaliações e cuidadores
+Route::get('/cuidadores', [AvaliacaoController::class, 'cuidadores']);
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/perfil', [PerfilMobileController::class, 'mostrar']);
     Route::patch('/perfil', [PerfilMobileController::class, 'atualizar']);
@@ -36,26 +37,23 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/suporte', [SuporteController::class, 'armazenar']);
 
     // Pacientes
-Route::get('/pacientes', [PacienteController::class, 'index']);
-Route::post('/pacientes', [PacienteController::class, 'store']);
-Route::put('/pacientes/{id}', [PacienteController::class, 'update']);
-Route::delete('/pacientes/{id}', [PacienteController::class, 'destroy']);
+    Route::get('/pacientes', [PacienteController::class, 'index']);
+    Route::post('/pacientes', [PacienteController::class, 'store']);
+    Route::put('/pacientes/{id}', [PacienteController::class, 'update']);
+    Route::delete('/pacientes/{id}', [PacienteController::class, 'destroy']);
 
-// Atendimentos
-Route::get('/atendimentos', [AtendimentoController::class, 'index']);
-Route::post('/atendimentos', [AtendimentoController::class, 'store']);
-Route::put('/atendimentos/{id}', [AtendimentoController::class, 'update']);
+    // Atendimentos
+    Route::get('/atendimentos', [AtendimentoController::class, 'index']);
+    Route::post('/atendimentos', [AtendimentoController::class, 'store']);
+    Route::put('/atendimentos/{id}', [AtendimentoController::class, 'update']);
 
-Route::patch('/atendimentos/{id}/cancelar', [AtendimentoController::class, 'cancelar']);
-Route::patch('/atendimentos/{id}/iniciar', [AtendimentoController::class, 'iniciar']);
-Route::patch('/atendimentos/{id}/concluir', [AtendimentoController::class, 'concluir']);
+    Route::patch('/atendimentos/{id}/cancelar', [AtendimentoController::class, 'cancelar']);
+    Route::patch('/atendimentos/{id}/iniciar', [AtendimentoController::class, 'iniciar']);
+    Route::patch('/atendimentos/{id}/concluir', [AtendimentoController::class, 'concluir']);
 
 
     // Listar avaliações
     Route::get('/avaliacoes', [AvaliacaoController::class, 'index']);
-
-    // Listar cuidadores para o filtro
-    Route::get('/cuidadores', [AvaliacaoController::class, 'cuidadores']);
 
     // Salvar avaliação
     Route::post('/avaliacoes', [AvaliacaoController::class, 'salvar']);

@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Paciente;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class PacienteSeeder extends Seeder
@@ -13,7 +12,7 @@ class PacienteSeeder extends Seeder
      */
     public function run(): void
     {
-        Paciente::insert([
+        $pacientes = [
             [
                 'id_responsavel' => 1,
                 'nome' => 'Maria Aparecida da Silva',
@@ -31,8 +30,6 @@ class PacienteSeeder extends Seeder
                 'estado' => 'SP',
                 'cep' => '17500-000',
                 'email' => 'maria@example.com',
-                'created_at' => now(),
-                'updated_at' => now(),
             ],
             [
                 'id_responsavel' => 2,
@@ -51,8 +48,6 @@ class PacienteSeeder extends Seeder
                 'estado' => 'SP',
                 'cep' => '17506-120',
                 'email' => 'jose@example.com',
-                'created_at' => now(),
-                'updated_at' => now(),
             ],
             [
                 'id_responsavel' => 3,
@@ -71,8 +66,6 @@ class PacienteSeeder extends Seeder
                 'estado' => 'SP',
                 'cep' => '17502-300',
                 'email' => 'ana@example.com',
-                'created_at' => now(),
-                'updated_at' => now(),
             ],
             [
                 'id_responsavel' => 4,
@@ -91,8 +84,6 @@ class PacienteSeeder extends Seeder
                 'estado' => 'SP',
                 'cep' => '17515-400',
                 'email' => 'pedro@example.com',
-                'created_at' => now(),
-                'updated_at' => now(),
             ],
             [
                 'id_responsavel' => 5,
@@ -111,9 +102,17 @@ class PacienteSeeder extends Seeder
                 'estado' => 'SP',
                 'cep' => '17511-250',
                 'email' => 'helena@example.com',
-                'created_at' => now(),
-                'updated_at' => now(),
             ],
-        ]);
+        ];
+
+        foreach ($pacientes as $paciente) {
+            Paciente::updateOrCreate(
+                ['email' => $paciente['email']],
+                array_merge($paciente, [
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ])
+            );
+        }
     }
 }

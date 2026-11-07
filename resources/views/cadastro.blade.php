@@ -1,4 +1,3 @@
-
 <x-sistema>
 
     @php
@@ -562,5 +561,53 @@
         </form>
 
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const campoCep = document.getElementById('cep');
+            const campoRua = document.getElementById('rua');
+            const campoBairro = document.getElementById('bairro');
+            const campoCidade = document.getElementById('cidade');
+            const campoEstado = document.getElementById('estado');
+
+            if (!campoCep) {
+                return;
+            }
+
+            campoCep.addEventListener('input', async function () {
+                const cep = campoCep.value.replace(/\D/g, '').slice(0, 8);
+                campoCep.value = cep.length > 5
+                    ? cep.slice(0, 5) + '-' + cep.slice(5)
+                    : cep;
+
+                if (cep.length !== 8) {
+                    return;
+                }
+
+                try {
+                    const resposta = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+
+                    if (!resposta.ok) {
+                        throw new Error('Erro na consulta do CEP.');
+                    }
+
+                    const endereco = await resposta.json();
+
+                    if (endereco.erro) {
+                        alert('CEP não encontrado. Verifique e tente novamente.');
+                        return;
+                    }
+
+                    if (campoRua) campoRua.value = endereco.logradouro || '';
+                    if (campoBairro) campoBairro.value = endereco.bairro || '';
+                    if (campoCidade) campoCidade.value = endereco.localidade || '';
+                    if (campoEstado) campoEstado.value = endereco.uf || '';
+                } catch (erro) {
+                    console.error('Erro ao consultar CEP:', erro);
+                    alert('Não foi possível consultar o CEP. Preencha o endereço manualmente.');
+                }
+            });
+        });
+    </script>
 
 </x-sistema>

@@ -57,10 +57,12 @@ class RegisteredUserController extends Controller
             // Apenas responsável ou cuidador.
             // Administrador não pode ser criado pelo cadastro público.
             'tipo_usuario' => [
-                'required',
+                'nullable',
                 Rule::in(['responsavel', 'cuidador']),
             ],
         ]);
+
+        $dados['tipo_usuario'] = $dados['tipo_usuario'] ?? 'responsavel';
 
         // Criação do usuário.
         $user = User::create([

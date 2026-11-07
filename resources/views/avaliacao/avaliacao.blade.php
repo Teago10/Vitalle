@@ -322,10 +322,17 @@
                 })
                 .then(async function(resposta) {
 
-                    const dados = await resposta.json();
+                    const texto = await resposta.text();
 
-                    if (!resposta.ok || !dados.sucesso) {
-                        throw new Error(dados.mensagem || 'Erro ao enviar avaliação.');
+                    let dados = null;
+                    try {
+                        dados = texto ? JSON.parse(texto) : null;
+                    } catch (erro) {
+                        throw new Error('Não foi possível processar a resposta do servidor.');
+                    }
+
+                    if (!resposta.ok || !dados || !dados.sucesso) {
+                        throw new Error(dados?.mensagem || 'Erro ao enviar avaliação.');
                     }
 
                     return dados;

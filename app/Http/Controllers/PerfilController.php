@@ -46,6 +46,12 @@ class PerfilController extends Controller
     {
         $usuario = $request->user();
 
+        if ($request->filled('cpf')) {
+            $request->merge([
+                'cpf' => preg_replace('/\D/', '', $request->input('cpf')),
+            ]);
+        }
+
         abort_unless(
             in_array($usuario->tipo_usuario, ['cuidador', 'responsavel'], true),
             403
@@ -71,7 +77,35 @@ class PerfilController extends Controller
             'cpf' => [
                 'required',
                 'string',
-                'max:14',
+                'max:11',
+                'regex:/^[0-9]{11}$/',
+                // Validação real do CPF comentada temporariamente para permitir CPFs fictícios.
+                // 'cpf' => ['required', 'string', 'max:11', 'regex:/^[0-9]{11}$/', function ($attribute, $value, $fail) {
+                //     $digits = preg_replace('/\D/', '', $value);
+                //     if (strlen($digits) !== 11) {
+                //         $fail('CPF inválido.');
+                //         return;
+                //     }
+                //     $sum = 0;
+                //     for ($i = 0; $i < 9; $i++) {
+                //         $sum += ((int) $digits[$i]) * (10 - $i);
+                //     }
+                //     $first = $sum % 11;
+                //     $first = $first < 2 ? 0 : 11 - $first;
+                //     if (((int) $digits[9]) !== $first) {
+                //         $fail('CPF inválido.');
+                //         return;
+                //     }
+                //     $sum = 0;
+                //     for ($i = 0; $i < 10; $i++) {
+                //         $sum += ((int) $digits[$i]) * (11 - $i);
+                //     }
+                //     $second = $sum % 11;
+                //     $second = $second < 2 ? 0 : 11 - $second;
+                //     if (((int) $digits[10]) !== $second) {
+                //         $fail('CPF inválido.');
+                //     }
+                // }],
                 Rule::unique('cuidadores', 'cpf'),
                 Rule::unique('responsaveis', 'cpf'),
             ],
